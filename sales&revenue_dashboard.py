@@ -83,3 +83,17 @@ month = {
 }
 print (f"\n The best month is: {month[best_month]}")
 
+revenue_by_product = dataset.groupby("Product")["Revenue"].sum().reset_index()
+bar = px.bar(revenue_by_product, x="Product", y="Revenue", title="Revenue by Product", color="Product")
+bar.show() 
+  
+revenue_by_month = dataset.groupby(dataset["Date"].dt.month)["Revenue"].sum().reset_index()
+revenue_by_month.columns = ["Month", "Revenue"]
+line = px.line(revenue_by_month, x="Month", y="Revenue", title="Revenue by Month", markers=True)
+line.show()
+
+pie = px.pie(dataset,names = "Region", values = "Units", title = "Pie Chart showing units sold by Region")
+pie.show()
+
+heatmap = px.density_heatmap(dataset, x="Product", y=dataset["Date"].dt.month, z="Revenue", histfunc="sum", title="Revenue Heatmap by Product & Month")
+heatmap.show()
