@@ -97,18 +97,21 @@ with col3:
 with col4:
     st.metric(label = 'Best Month', value = month[best_month])
     
-    
-revenue_by_product = dataset.groupby("Product")["Revenue"].sum().reset_index()
-bar = px.bar(revenue_by_product, x="Product", y="Revenue", title="Revenue by Product", color="Product")
-st.plotly_chart(bar) 
-  
 revenue_by_month = dataset.groupby(dataset["Date"].dt.month)["Revenue"].sum().reset_index()
 revenue_by_month.columns = ["Month", "Revenue"]
 line = px.line(revenue_by_month, x="Month", y="Revenue", title="Revenue by Month", markers=True)
 st.plotly_chart(line) 
 
-pie = px.pie(dataset,names = "Region", values = "Units", title = "Pie Chart showing units sold by Region")
-st.plotly_chart(pie) 
+col5, col6 = st.columns(2)
+
+with col5: 
+    revenue_by_product = dataset.groupby("Product")["Revenue"].sum().reset_index()
+    bar = px.bar(revenue_by_product, x="Product", y="Revenue", title="Revenue by Product", color="Product")
+    st.plotly_chart(bar) 
+    
+with col6:
+    pie = px.pie(dataset,names = "Region", values = "Units", title = "Pie Chart showing units sold by Region")
+    st.plotly_chart(pie) 
 
 heatmap = px.density_heatmap(dataset, x="Product", y=dataset["Date"].dt.month, z="Revenue", histfunc="sum", title="Revenue Heatmap by Product & Month")
 st.plotly_chart(heatmap) 
