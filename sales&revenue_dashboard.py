@@ -1,6 +1,8 @@
 import pandas as pd
 import plotly.express as px
 import numpy as np
+import streamlit as st
+
 
 def date():
     dp = pd.date_range(start= '2025-01-01' , end= '2026-01-01', freq= 'D')
@@ -63,9 +65,9 @@ total_revenue = dataset["Revenue"].sum()
 total_units = dataset["Units"].sum()
 best_product = dataset.groupby("Product")["Revenue"].sum().idxmax()
 best_month = dataset.groupby(dataset["Date"].dt.month)["Revenue"].sum().idxmax()
-print (f"\n Total Revenue is: {total_revenue}")
-print (f"\n Total Units sold is: {total_units}")
-print (f"\n The best product is: {best_product}")
+
+
+
 month = {
     1 : "Jan",
     2 : "Feb",
@@ -81,19 +83,32 @@ month = {
     12:"Dec"
     
 }
-print (f"\n The best month is: {month[best_month]}")
 
+
+
+col1, col2, col3, col4 = st.columns(4)
+with col1: 
+    st.metric(label = 'Total Revenue', value = total_revenue)
+
+with col2:
+    st.metric(label = 'Total Units', value = total_units)
+with col3:
+    st.metric(label = 'Best Product', value = best_product)
+with col4:
+    st.metric(label = 'Best Month', value = month[best_month])
+    
+    
 revenue_by_product = dataset.groupby("Product")["Revenue"].sum().reset_index()
 bar = px.bar(revenue_by_product, x="Product", y="Revenue", title="Revenue by Product", color="Product")
-bar.show() 
+st.plotly_chart(bar) 
   
 revenue_by_month = dataset.groupby(dataset["Date"].dt.month)["Revenue"].sum().reset_index()
 revenue_by_month.columns = ["Month", "Revenue"]
 line = px.line(revenue_by_month, x="Month", y="Revenue", title="Revenue by Month", markers=True)
-line.show()
+st.plotly_chart(line) 
 
 pie = px.pie(dataset,names = "Region", values = "Units", title = "Pie Chart showing units sold by Region")
-pie.show()
+st.plotly_chart(pie) 
 
 heatmap = px.density_heatmap(dataset, x="Product", y=dataset["Date"].dt.month, z="Revenue", histfunc="sum", title="Revenue Heatmap by Product & Month")
-heatmap.show()
+st.plotly_chart(heatmap) 
